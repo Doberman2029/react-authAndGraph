@@ -13,6 +13,8 @@ export default function GraphPage({ userName = "вы не авторизовал
   const [startDate, setStartDate] = useState(new Date(2020, 2, 2));
   const [endDate, setEndDate] = useState(new Date(2020, 2, 14));
 
+  const [reRender, setReRender] = useState(true);
+
   const [err, setErr] = useState(false);
 
   const [url, setUrl] = useState(
@@ -60,6 +62,10 @@ export default function GraphPage({ userName = "вы не авторизовал
     );
   }, [url]);
 
+  useEffect(() => {
+    checkDateForChangeURL();
+  }, [reRender]);
+
   const valuteHandler = (e) => {
     setValute(e.target.value);
   };
@@ -97,9 +103,14 @@ export default function GraphPage({ userName = "вы не авторизовал
     return result;
   };
 
-  const dateHandler = (date) => {
+  const startDateHandler = (date) => {
     setStartDate(date);
     setEndDate(null);
+  };
+
+  const endDateHandler = (date) => {
+    setEndDate(date);
+    setReRender(!reRender);
   };
 
   const getDate = (a) => {
@@ -133,17 +144,6 @@ export default function GraphPage({ userName = "вы не авторизовал
 
   let valuteArray = ["USD/RUB", "EUR/RUB", "EUR/USD"];
 
-  const [reRender, setReRender] = useState(true);
-
-  const vas = (date) => {
-    setEndDate(date);
-    setReRender(!reRender);
-  };
-
-  useEffect(() => {
-    checkDateForChangeURL();
-  }, [reRender]);
-
   return (
     <>
       <h2 className="text-center pt-2">Добрый день, {userName}</h2>
@@ -151,7 +151,7 @@ export default function GraphPage({ userName = "вы не авторизовал
         <DatePicker
           className="form-control ml-3"
           selected={startDate}
-          onChange={(date) => dateHandler(date)}
+          onChange={(date) => startDateHandler(date)}
           selectsStart
           startDate={startDate}
           endDate={endDate}
@@ -164,7 +164,7 @@ export default function GraphPage({ userName = "вы не авторизовал
         <DatePicker
           className="form-control ml-3 "
           selected={endDate}
-          onChange={(date) => vas(date)}
+          onChange={(date) => endDateHandler(date)}
           selectsEnd
           startDate={startDate}
           endDate={endDate}
