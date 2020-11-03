@@ -1,9 +1,15 @@
 import React, { useState } from "react";
-import { HashRouter as Router, Switch, Route } from "react-router-dom";
+import {
+  HashRouter as Router,
+  Switch,
+  Route,
+  Redirect,
+} from "react-router-dom";
 import Header from "./Components/Header";
 import GraphPage from "./Components/GraphPage";
 import LoginPage from "./Components/LoginPage";
 import "./App.css";
+import Main from "./Components/Main";
 
 function App() {
   const [log, setLog] = useState(false);
@@ -23,16 +29,20 @@ function App() {
       <div className="App">
         <Header logOut={logHandler} log={log} />
         <Switch>
+          {log ? <Redirect from="/auth" to="/graph" /> : ""}
           <Route exact path="/">
+            <Main name={name} />
+          </Route>
+          <Route path="/graph">
+            <GraphPage userName={name} />
+          </Route>
+          <Route path="/auth">
             <LoginPage
               log={log}
               logHandler={logHandler}
               nameHandler={nameHandler}
               userName={name}
             />
-          </Route>
-          <Route path="/graph">
-            <GraphPage userName={name} />
           </Route>
         </Switch>
       </div>

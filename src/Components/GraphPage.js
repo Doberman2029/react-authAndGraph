@@ -13,6 +13,8 @@ export default function GraphPage({ userName = "вы не авторизовал
   const [startDate, setStartDate] = useState(new Date(2020, 2, 2));
   const [endDate, setEndDate] = useState(new Date(2020, 2, 14));
 
+  const [err, setErr] = useState(false);
+
   const [url, setUrl] = useState(
     `https://cors-anywhere.herokuapp.com/http://www.cbr.ru/scripts/XML_dynamic.asp?date_req1=02/03/2020&date_req2=14/03/2020&VAL_NM_RQ=`
   );
@@ -40,10 +42,14 @@ export default function GraphPage({ userName = "вы не авторизовал
           ]);
         }
       })
-      .catch((e) => console.log(e));
+      .catch((e) => {
+        console.log(e);
+        setErr(true);
+      });
   };
 
   useEffect(() => {
+    setErr(false);
     setLoading(true);
     setDataUSD([]);
     setDataEUR([]);
@@ -105,13 +111,11 @@ export default function GraphPage({ userName = "вы не авторизовал
   };
 
   const checkDateForChangeURL = () => {
-    if (startDate && endDate) {
-      let startRes = getDate(startDate);
-      let endRes = getDate(endDate);
-      setUrl(
-        `https://cors-anywhere.herokuapp.com/http://www.cbr.ru/scripts/XML_dynamic.asp?date_req1=${startRes.day}/${startRes.month}/${startRes.year}&date_req2=${endRes.day}/${endRes.month}/${endRes.year}&VAL_NM_RQ=`
-      );
-    }
+    let startRes = getDate(startDate);
+    let endRes = getDate(endDate);
+    setUrl(
+      `https://cors-anywhere.herokuapp.com/http://www.cbr.ru/scripts/XML_dynamic.asp?date_req1=${startRes.day}/${startRes.month}/${startRes.year}&date_req2=${endRes.day}/${endRes.month}/${endRes.year}&VAL_NM_RQ=`
+    );
   };
 
   let data = {
@@ -129,6 +133,17 @@ export default function GraphPage({ userName = "вы не авторизовал
 
   let valuteArray = ["USD/RUB", "EUR/RUB", "EUR/USD"];
 
+  const [reRender, setReRender] = useState(true);
+
+  const vas = (date) => {
+    setEndDate(date);
+    setReRender(!reRender);
+  };
+
+  useEffect(() => {
+    checkDateForChangeURL();
+  }, [reRender]);
+
   return (
     <>
       <h2 className="text-center pt-2">Добрый день, {userName}</h2>
@@ -144,11 +159,12 @@ export default function GraphPage({ userName = "вы не авторизовал
           maxDate={subDays(new Date(), 1)}
           placeholderText="От"
           dateFormat="dd/MM/yyyy"
+          disabled={loading}
         />
         <DatePicker
           className="form-control ml-3 "
           selected={endDate}
-          onChange={(date) => setEndDate(date)}
+          onChange={(date) => vas(date)}
           selectsEnd
           startDate={startDate}
           endDate={endDate}
@@ -156,12 +172,13 @@ export default function GraphPage({ userName = "вы не авторизовал
           maxDate={addDays(startDate, 15)}
           placeholderText="До"
           dateFormat="dd/MM/yyyy"
+          disabled={loading}
         />
 
         <button
           onClick={checkDateForChangeURL}
           className="btn btn-primary ml-5"
-          disabled={!(startDate && endDate)}
+          disabled={!(startDate && endDate) || loading}
         >
           Показать информацию
         </button>
@@ -169,7 +186,7 @@ export default function GraphPage({ userName = "вы не авторизовал
 
       {loading ? (
         <h3 className="text-center">Loading...</h3>
-      ) : dataUSD.length > 1 || dataEUR.length > 1 ? (
+      ) : (dataUSD !== [] || dataEUR !== []) && !err ? (
         <>
           <select
             value={valute}
@@ -186,6 +203,10 @@ export default function GraphPage({ userName = "вы не авторизовал
             <Line data={data} />
           </div>
         </>
+      ) : err ? (
+        <h2 className="text-center">
+          Возможно какая-то ошибка с сервером, попробуйте сделать запрос снова
+        </h2>
       ) : (
         <h2 className="text-center">Данных за этот промежуток не найдено</h2>
       )}

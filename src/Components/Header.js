@@ -17,7 +17,7 @@ export default function Header({ log, logOut }) {
           Выйти
         </button>
       ) : (
-        <Link to="/" className="btn btn-primary d-block">
+        <Link to="/auth" className="btn btn-primary d-block">
           Войти
         </Link>
       )}

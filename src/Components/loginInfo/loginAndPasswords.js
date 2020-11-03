@@ -28,7 +28,6 @@ function usersInfo() {
 
 export function addNewUserInLOcalStorage(name, password) {
   let storageUsers = receivLocalStorageData();
-  console.log(storageUsers);
   storageUsers.push({ name, password });
   return localStorage.setItem("user", JSON.stringify(storageUsers));
 }
