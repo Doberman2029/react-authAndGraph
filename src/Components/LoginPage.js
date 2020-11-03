@@ -80,6 +80,7 @@ export default function LoginPage({ log, logHandler, nameHandler, userName }) {
           handler={nameInputHandler}
         />
         <FormGroup
+          type="password"
           value={pass}
           placeholder="Пароль"
           id="passLabel"
