@@ -31,19 +31,19 @@ export default function GraphPage({ userName = "вы не авторизовал
       )
       .then((datas) => datas.getElementsByTagName("Record"))
       .then((el) => {
+        let resultArray = [];
         for (let i = 0; i < el.length; i++) {
-          func((prev) => [
-            ...prev,
-            {
-              date: el[i].getAttribute("Date"),
-              value: el[i]
-                .getElementsByTagName("Value")[0]
-                .innerHTML.replace(",", "."),
-              nominal: el[i].getElementsByTagName("Nominal")[0].innerHTML,
-            },
-          ]);
+          resultArray.push({
+            date: el[i].getAttribute("Date"),
+            value: el[i]
+              .getElementsByTagName("Value")[0]
+              .innerHTML.replace(",", "."),
+            nominal: el[i].getElementsByTagName("Nominal")[0].innerHTML,
+          });
         }
+        return resultArray;
       })
+      .then((array) => func(array))
       .catch((e) => {
         console.log(e);
         setErr(true);
@@ -56,10 +56,10 @@ export default function GraphPage({ userName = "вы не авторизовал
     setDataUSD([]);
     setDataEUR([]);
 
-    fetchURLAndSetData(`${url}R01235`, setDataUSD);
-    fetchURLAndSetData(`${url}R01239`, setDataEUR).finally(() =>
-      setLoading(false)
-    );
+    Promise.all([
+      fetchURLAndSetData(`${url}R01235`, setDataUSD),
+      fetchURLAndSetData(`${url}R01239`, setDataEUR),
+    ]).finally(() => setLoading(false));
   }, [url]);
 
   useEffect(() => {
@@ -110,7 +110,9 @@ export default function GraphPage({ userName = "вы не авторизовал
 
   const endDateHandler = (date) => {
     setEndDate(date);
-    setReRender(!reRender);
+    if (date) {
+      setReRender(!reRender);
+    }
   };
 
   const getDate = (a) => {
