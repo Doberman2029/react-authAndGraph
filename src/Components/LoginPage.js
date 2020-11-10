@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from "react";
+
+import Button from "./Button";
 import FormGroup from "./FormGroup";
+import LogInError from "./login pages/LogInError";
+import LogInForm from "./login pages/LogInForm/LogInForm";
 import {
   addNewUserInLOcalStorage,
   authCheck,
@@ -7,7 +11,7 @@ import {
 
 export const CountStateContext = React.createContext();
 
-export default function LoginPage({ log, logHandler, nameHandler, userName }) {
+export default function LoginPage({ logHandler, nameHandler }) {
   const [name, setName] = useState("");
   const [pass, setPass] = useState("");
   const [logError, setLogError] = useState(false);
@@ -21,9 +25,11 @@ export default function LoginPage({ log, logHandler, nameHandler, userName }) {
   };
 
   useEffect(() => {
+    let timeout;
     if (logError) {
-      setTimeout(() => setLogError(false), 3500);
+      timeout = setTimeout(() => setLogError(false), 3500);
     }
+    return () => clearTimeout(timeout);
   }, [logError]);
 
   const clearInputs = () => {
@@ -57,22 +63,10 @@ export default function LoginPage({ log, logHandler, nameHandler, userName }) {
     }
   };
 
-  if (log) {
-    return <h2 className="text-center pt-2">Вы уже вошли, {userName}!</h2>;
-  }
-
   return (
     <>
-      {logError ? (
-        <div className="alert alert-danger" role="alert">
-          <p className="text-center mb-0">
-            Имя или пароль введены не правильно, попробуйте снова
-          </p>
-        </div>
-      ) : (
-        ""
-      )}
-      <div className="login">
+      {logError ? <LogInError /> : ""}
+      <LogInForm>
         <FormGroup
           value={name}
           placeholder="Имя"
@@ -86,23 +80,24 @@ export default function LoginPage({ log, logHandler, nameHandler, userName }) {
           id="passLabel"
           handler={passInputHandler}
         />
-        <button
+
+        <Button
           type="submit"
-          className="btn btn-primary login-btn"
+          className="w-100 mb-2"
           onClick={logInHandler}
           disabled={checkInputsForValue()}
         >
           Войти
-        </button>
-        <button
+        </Button>
+        <Button
           type="submit"
-          className="btn btn-primary login-btn"
+          className="w-100"
           onClick={() => registrationHandler(name, pass)}
           disabled={checkInputsForValue()}
         >
           Зарегестрироваться
-        </button>
-      </div>
+        </Button>
+      </LogInForm>
     </>
   );
 }

@@ -6,9 +6,8 @@ import {
   Redirect,
 } from "react-router-dom";
 import Header from "./Components/Header";
-import GraphPage from "./Components/GraphPage";
+import GraphPage from "./Components/graph/GraphPage/GraphPage";
 import LoginPage from "./Components/LoginPage";
-import "./App.css";
 import Main from "./Components/Main";
 
 function App() {
@@ -26,26 +25,24 @@ function App() {
 
   return (
     <Router basename="/react-authAndGraph">
-      <div className="App">
-        <Header logOut={logHandler} log={log} />
-        <Switch>
-          {log ? <Redirect from="/auth" to="/graph" /> : ""}
-          <Route exact path="/">
-            <Main name={name} />
-          </Route>
-          <Route path="/graph">
-            <GraphPage userName={name} />
-          </Route>
-          <Route path="/auth">
-            <LoginPage
-              log={log}
-              logHandler={logHandler}
-              nameHandler={nameHandler}
-              userName={name}
-            />
-          </Route>
-        </Switch>
-      </div>
+      <Header logOut={logHandler} log={log} />
+      <Switch>
+        {log ? <Redirect from="/auth" to="/graph" /> : ""}
+        <Route exact path="/">
+          <Main name={name} />
+        </Route>
+        <Route path="/graph">
+          <GraphPage userName={name} />
+        </Route>
+        <Route path="/auth">
+          <LoginPage
+            log={log}
+            logHandler={logHandler}
+            nameHandler={nameHandler}
+            userName={name}
+          />
+        </Route>
+      </Switch>
     </Router>
   );
 }

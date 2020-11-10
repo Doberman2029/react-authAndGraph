@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Line } from "react-chartjs-2";
-import { addDays, subDays } from "date-fns";
 
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
+import GraphLoading from "../GraphLoading";
+import GraphWelcome from "../GraphWelcome";
+import GraphDatePicker from "../GraphDatePicker/GraphDatePicker";
+import GraphData from "../Graph/GraphData";
+
+import "./GraphPage.css";
 
 export default function GraphPage({ userName = "вы не авторизовались" }) {
   const [dataUSD, setDataUSD] = useState([]);
@@ -55,6 +57,7 @@ export default function GraphPage({ userName = "вы не авторизовал
     setLoading(true);
     setDataUSD([]);
     setDataEUR([]);
+    setValute("USD/RUB");
 
     Promise.all([
       fetchURLAndSetData(`${url}R01235`, setDataUSD),
@@ -148,69 +151,28 @@ export default function GraphPage({ userName = "вы не авторизовал
 
   return (
     <>
-      <h2 className="text-center pt-2">Добрый день, {userName}</h2>
-      <div className="w-100 d-flex align-items-center">
-        <DatePicker
-          className="form-control ml-3"
-          selected={startDate}
-          onChange={(date) => startDateHandler(date)}
-          selectsStart
-          startDate={startDate}
-          endDate={endDate}
-          minDate={new Date(2010, 10, 10)}
-          maxDate={subDays(new Date(), 1)}
-          placeholderText="От"
-          dateFormat="dd/MM/yyyy"
-          disabled={loading}
-        />
-        <DatePicker
-          className="form-control ml-3 "
-          selected={endDate}
-          onChange={(date) => endDateHandler(date)}
-          selectsEnd
-          startDate={startDate}
-          endDate={endDate}
-          minDate={startDate}
-          maxDate={addDays(startDate, 15)}
-          placeholderText="До"
-          dateFormat="dd/MM/yyyy"
-          disabled={loading}
-        />
-
-        <button
-          onClick={checkDateForChangeURL}
-          className="btn btn-primary ml-5"
-          disabled={!(startDate && endDate) || loading}
-        >
-          Показать информацию
-        </button>
-      </div>
+      <GraphWelcome name={userName} />
+      <GraphDatePicker
+        loading={loading}
+        checkDateForChangeURL={checkDateForChangeURL}
+        endDateHandler={endDateHandler}
+        startDateHandler={startDateHandler}
+        startDate={startDate}
+        endDate={endDate}
+      />
 
       {loading ? (
-        <h3 className="text-center">Loading...</h3>
-      ) : (dataUSD !== [] || dataEUR !== []) && !err ? (
-        <>
-          <select
-            value={valute}
-            onChange={valuteHandler}
-            className="custom-select"
-          >
-            {valuteArray.map((el) => (
-              <option value={el} key={el}>
-                {el}
-              </option>
-            ))}
-          </select>
-          <div className="wrapper">
-            <Line data={data} />
-          </div>
-        </>
-      ) : err ? (
-        <h2 className="text-center">
-          Возможно какая-то ошибка с сервером, попробуйте сделать запрос снова
-        </h2>
+        <GraphLoading />
       ) : (
-        <h2 className="text-center">Данных за этот промежуток не найдено</h2>
+        <GraphData
+          dataUSD={dataUSD}
+          dataEUR={dataEUR}
+          err={err}
+          data={data}
+          valuteArray={valuteArray}
+          valuteHandler={valuteHandler}
+          valute={valute}
+        />
       )}
     </>
   );
