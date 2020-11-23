@@ -2,16 +2,14 @@ import React from "react";
 
 import HeaderLog from "./header/HeaderLog";
 import HeaderNav from "./header/HeaderNav";
-import HeaderNavWrapper from "./header/HeaderNavWrapper";
-import HeaderWrapper from "./header/HeaderWrapper/HeaderWrapper";
 
 export default function Header({ log, logOut }) {
   return (
-    <HeaderWrapper>
-      <HeaderNavWrapper>
+    <header className="d-flex justify-content-between align-items-center line border-bottom">
+      <nav className="nav">
         <HeaderNav />
-      </HeaderNavWrapper>
+      </nav>
       <HeaderLog log={log} logOut={logOut} />
-    </HeaderWrapper>
+    </header>
   );
 }

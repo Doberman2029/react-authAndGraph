@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from "react";
 
-import GraphLoading from "../GraphLoading";
-import GraphWelcome from "../GraphWelcome";
-import GraphDatePicker from "../GraphDatePicker/GraphDatePicker";
-import GraphData from "../Graph/GraphData";
+import GraphDatePicker from "./GraphDatePicker";
+import GraphData from "./GraphData";
 
-import "./GraphPage.css";
+import TextCenter from "../TextCenter";
 
 export default function GraphPage({ userName = "вы не авторизовались" }) {
   const [dataUSD, setDataUSD] = useState([]);
@@ -151,7 +149,7 @@ export default function GraphPage({ userName = "вы не авторизовал
 
   return (
     <>
-      <GraphWelcome name={userName} />
+      <TextCenter>Добрый день, {userName}</TextCenter>
       <GraphDatePicker
         loading={loading}
         checkDateForChangeURL={checkDateForChangeURL}
@@ -162,7 +160,7 @@ export default function GraphPage({ userName = "вы не авторизовал
       />
 
       {loading ? (
-        <GraphLoading />
+        <h3 className="text-center">Loading...</h3>
       ) : (
         <GraphData
           dataUSD={dataUSD}

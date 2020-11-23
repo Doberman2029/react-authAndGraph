@@ -2,14 +2,13 @@ import React, { useState, useEffect } from "react";
 
 import Button from "./Button";
 import FormGroup from "./FormGroup";
-import LogInError from "./login pages/LogInError";
-import LogInForm from "./login pages/LogInForm/LogInForm";
+import Error from "../Components/Error";
 import {
   addNewUserInLOcalStorage,
   authCheck,
 } from "./loginInfo/loginAndPasswords";
 
-export const CountStateContext = React.createContext();
+import "../styles/LogInForm.css";
 
 export default function LoginPage({ logHandler, nameHandler }) {
   const [name, setName] = useState("");
@@ -65,8 +64,12 @@ export default function LoginPage({ logHandler, nameHandler }) {
 
   return (
     <>
-      {logError ? <LogInError /> : ""}
-      <LogInForm>
+      {logError ? (
+        <Error> Имя или пароль введены не правильно, попробуйте снова</Error>
+      ) : (
+        ""
+      )}
+      <div className="login">
         <FormGroup
           value={name}
           placeholder="Имя"
@@ -97,7 +100,7 @@ export default function LoginPage({ logHandler, nameHandler }) {
         >
           Зарегестрироваться
         </Button>
-      </LogInForm>
+      </div>
     </>
   );
 }

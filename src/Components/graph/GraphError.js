@@ -1,10 +1,12 @@
 import React from "react";
-import GraphNotFound from "./GraphNotFound";
-import GraphServerError from "./GraphServerError";
+import TextCenter from "../TextCenter";
 
 export default function GraphError({ error }) {
-  if (error) {
-    return <GraphServerError />;
-  }
-  return <GraphNotFound />;
+  return (
+    <TextCenter>
+      {error
+        ? "Возможно какая-то ошибка с сервером, попробуйте сделать запрос снова"
+        : "Данных за этот промежуток не найдено"}
+    </TextCenter>
+  );
 }

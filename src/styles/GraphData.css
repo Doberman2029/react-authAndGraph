@@ -1,3 +1,7 @@
+.custom-line {
+  margin: 0 auto;
+  width: 550px;
+}
 .custom-select {
   display: block;
   width: 150px;

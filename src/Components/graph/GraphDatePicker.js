@@ -1,8 +1,9 @@
 import React from "react";
 import { addDays, subDays } from "date-fns";
 import DatePicker from "react-datepicker";
-import Button from "../../Button";
-import "./GraphDatePicker.css";
+import Button from "../Button";
+
+import "../../styles/GraphDatePicker.css";
 import "react-datepicker/dist/react-datepicker.css";
 
 export default function GraphDatePicker({

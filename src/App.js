@@ -6,7 +6,7 @@ import {
   Redirect,
 } from "react-router-dom";
 import Header from "./Components/Header";
-import GraphPage from "./Components/graph/GraphPage/GraphPage";
+import GraphPage from "./Components/graph/GraphPage";
 import LoginPage from "./Components/LoginPage";
 import Main from "./Components/Main";
 
